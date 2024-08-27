@@ -1,9 +1,6 @@
-import time
 
 import requests
-from datetime import datetime
 from flask import Flask, request, jsonify
-from dateutil.relativedelta import relativedelta
 
 app = Flask(__name__)
 
@@ -59,13 +56,13 @@ def nse_charter(regulation):
 
             return filtered_data
 
-        filtered = []
+        # filtered = []
         filtered_datas = filter_continuous_prices(json_data["grapthData"])
-        for filtered_data in filtered_datas:
-            filtered.append(filtered_data[1])
+        # for filtered_data in filtered_datas:
+        #     filtered.append(filtered_data[1])
         new_json_data = {
             "companyName": response.json()["info"]["companyName"],
-            "close_prices": filtered,
+            "close_prices": filtered_datas,
             "current_price": response.json()["priceInfo"]["lastPrice"],                 # 当前的股票价格
             "percent_change": response.json()["priceInfo"]["change"],    # 今日股票价格的百分比变化
             "prasent": response.json()["priceInfo"]["pChange"],                              # 表示当前的变化值
@@ -81,5 +78,5 @@ def nse_charter(regulation):
     return new_json_data
 
 if __name__ == '__main__':
-
+    # print(nse_charter("PRAKASH"))
     app.run(host='0.0.0.0', port=5255, debug=True)
