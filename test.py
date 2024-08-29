@@ -1,8 +1,9 @@
-
 import requests
-from flask import Flask, request, jsonify
+from flask import Flask
+from bsetool import get_stock_current_info
 
 app = Flask(__name__)
+
 
 @app.route('/history_1day/<regulation>', methods=['GET'])
 def nse_charter(regulation):
@@ -34,14 +35,14 @@ def nse_charter(regulation):
     session = requests.Session()
     session.get(url='https://www.nseindia.com/', headers=headers)
     response = session.get('https://www.nseindia.com/api/quote-equity', params=params,
-                            headers=headers)
+                           headers=headers)
     try:
         params_S = {
             'index': response.json()["info"]["identifier"],
             'type': 'symbol',
         }
         response_s = session.get('https://www.nseindia.com/api/chart-databyindex', params=params_S,
-                                headers=headers)
+                                 headers=headers)
         json_data = response_s.json()
 
         def filter_continuous_prices(data):
@@ -63,20 +64,25 @@ def nse_charter(regulation):
         new_json_data = {
             "companyName": response.json()["info"]["companyName"],
             "close_prices": filtered_datas,
-            "current_price": response.json()["priceInfo"]["lastPrice"],                 # 当前的股票价格
-            "percent_change": response.json()["priceInfo"]["change"],    # 今日股票价格的百分比变化
-            "prasent": response.json()["priceInfo"]["pChange"],                              # 表示当前的变化值
-            "stock": json_data['name']                          # 股票的名称
+            "current_price": response.json()["priceInfo"]["lastPrice"],  # 当前的股票价格
+            "percent_change": response.json()["priceInfo"]["change"],  # 今日股票价格的百分比变化
+            "prasent": response.json()["priceInfo"]["pChange"],  # 表示当前的变化值
+            "stock": json_data['name']  # 股票的名称
         }
         # 打印结果
         return new_json_data
     except KeyError:
-        new_json_data = {
-            "error": f"Invalid parameter {regulation}",
-            "note": "此参数是刚发行或即将发行的吗？请切换请求参数重新尝试！！！"
-        }
+        bse_data = get_stock_current_info(stock_name=regulation)
+        if bse_data is None:
+            new_json_data = {
+                "error": f"Invalid parameter {regulation}",
+                "note": "此参数是刚发行或即将发行的吗？请切换请求参数重新尝试！！！"
+            }
+        else:
+            new_json_data = bse_data
     return new_json_data
+
 
 if __name__ == '__main__':
     # print(nse_charter("PRAKASH"))
-    app.run(host='0.0.0.0', port=5255, debug=True)
+    app.run(host='0.0.0.0', port=5258, debug=True)
