@@ -59,7 +59,7 @@ def get_stock_current_info(stock_name):
             "companyName": stock_info_pre["companyName"],
             "current_price": stock_info_pre["currentValue"],
             "percent_change": stock_info_pre["pChange"],
-            "prasent": 0,
+            "prasent": stock_info_pre["currentValue"],
             "stock": stock_info_pre["securityID"]
         }
         return stock_info
