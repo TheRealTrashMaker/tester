@@ -49,6 +49,7 @@ def get_stock_current_info(stock_name):
     stock_code = get_stockcode(stock_name=stock_name)
     if stock_code:
         stock_info_pre = get_stock_info_pre(stock_code)
+        print(stock_info_pre)
         stock_info = {
             "close_prices": [
                 [
@@ -59,7 +60,7 @@ def get_stock_current_info(stock_name):
             "companyName": stock_info_pre["companyName"],
             "current_price": stock_info_pre["currentValue"],
             "percent_change": stock_info_pre["pChange"],
-            "prasent": stock_info_pre["currentValue"],
+            "prasent": stock_info_pre["pChange"],
             "stock": stock_info_pre["securityID"]
         }
         return stock_info
