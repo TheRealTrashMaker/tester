@@ -85,4 +85,4 @@ def nse_charter(regulation):
 
 if __name__ == '__main__':
     # print(nse_charter("PRAKASH"))
-    app.run(host='0.0.0.0', port=5258, debug=True)
+    app.run(host='0.0.0.0', port=5263, debug=True)
